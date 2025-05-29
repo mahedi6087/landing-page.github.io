@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assignment Upload</title>
+</head>
+<body>
+  <h2>Upload Your Assignment</h2>
+
+  <form id="assignmentForm" enctype="multipart/form-data">
+    <label>Choose Assignment File:</label><br>
+    <input type="file" name="file" accept=".doc,.docx,.pdf,.txt,.odt,.rtf,.zip,.jpg,.png" required><br><br>
+
+    <label>Or Google Drive Link (optional):</label><br>
+    <input type="url" name="driveLink" placeholder="Paste Google Drive link"><br><br>
+
+    <button type="submit">Submit Assignment</button>
+  </form>
+
+  <br><hr><br>
+
+  <h2>Check Your Grade</h2>
+  <button onclick="checkGrade()">Check Grade</button>
+
+  <div id="gradeResult"></div>
+
+  <script>
+    // Handle grade button click
+    function checkGrade() {
+      const gradeUrl = "https://script.google.com/macros/s/AKfycbyosCbxrEC_f3ahZKCs6wfVtLGs1vYXQU7Gg9dh_Rcx-tquNTXYfhAw91R2L2u80Ib66Q/exec";
+      
+      fetch(gradeUrl)
+        .then(res => res.text())
+        .then(data => {
+          document.getElementById("gradeResult").innerText = "Grade Response: " + data;
+        })
+        .catch(error => {
+          document.getElementById("gradeResult").innerText = "Error fetching grade.";
+        });
+    }
+  </script>
+</body>
+</html>
