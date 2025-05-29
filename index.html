@@ -3,40 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Assignment Upload</title>
+  <title>Assignment Upload & Grade Check</title>
 </head>
 <body>
-  <h2>Upload Your Assignment</h2>
+  <h2>Upload Assignment</h2>
 
-  <form id="assignmentForm" enctype="multipart/form-data">
-    <label>Choose Assignment File:</label><br>
-    <input type="file" name="file" accept=".doc,.docx,.pdf,.txt,.odt,.rtf,.zip,.jpg,.png" required><br><br>
+  <form id="assignmentForm">
+    <label>Select Assignment File:</label><br>
+    <input type="file" name="file" accept=".doc,.docx,.pdf,.txt,.zip,.jpg,.png"><br><br>
 
-    <label>Or Google Drive Link (optional):</label><br>
-    <input type="url" name="driveLink" placeholder="Paste Google Drive link"><br><br>
+    <label>Or Paste Google Drive Link:</label><br>
+    <input type="url" name="driveLink" placeholder="https://drive.google.com/..."><br><br>
 
     <button type="submit">Submit Assignment</button>
   </form>
 
-  <br><hr><br>
+  <hr>
 
   <h2>Check Your Grade</h2>
   <button onclick="checkGrade()">Check Grade</button>
 
-  <div id="gradeResult"></div>
+  <div id="gradeResult" style="margin-top: 10px; font-weight: bold;"></div>
 
   <script>
-    // Handle grade button click
+    // Placeholder submission handler
+    document.getElementById("assignmentForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Assignment uploaded (not yet connected to server).");
+    });
+
+    // Grade check function
     function checkGrade() {
       const gradeUrl = "https://script.google.com/macros/s/AKfycbyosCbxrEC_f3ahZKCs6wfVtLGs1vYXQU7Gg9dh_Rcx-tquNTXYfhAw91R2L2u80Ib66Q/exec";
-      
+
       fetch(gradeUrl)
         .then(res => res.text())
         .then(data => {
-          document.getElementById("gradeResult").innerText = "Grade Response: " + data;
+          document.getElementById("gradeResult").innerText = "Your Grade: " + data;
         })
-        .catch(error => {
-          document.getElementById("gradeResult").innerText = "Error fetching grade.";
+        .catch(err => {
+          document.getElementById("gradeResult").innerText = "Error getting grade.";
         });
     }
   </script>
