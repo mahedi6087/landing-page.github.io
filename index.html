@@ -3,48 +3,841 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Assignment Upload & Grade Check</title>
+  <title>MAHEDI's Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #64748b;
+      --accent: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --light-bg: #ffffff;
+      --light-surface: #f8fafc;
+      --light-text: #0f172a;
+      --light-text-secondary: #64748b;
+      --dark-bg: #0f172a;
+      --dark-surface: #1e293b;
+      --dark-text: #f8fafc;
+      --dark-text-secondary: #cbd5e1;
+      --border-light: #e2e8f0;
+      --border-dark: #334155;
+      --shadow-light: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-medium: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-large: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--light-text);
+      transition: all 0.3s ease;
+      display: flex;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    body.dark {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: var(--dark-text);
+    }
+
+    .sidebar {
+      width: 280px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--border-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      position: fixed;
+      box-shadow: var(--shadow-medium);
+      z-index: 1000;
+    }
+
+    body.dark .sidebar {
+      background: rgba(30, 41, 59, 0.95);
+      border-right: 1px solid var(--border-dark);
+    }
+
+    .sidebar-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    body.dark .sidebar-header {
+      border-bottom: 1px solid var(--border-dark);
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 1rem;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .sidebar h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--light-text);
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark .sidebar h1 {
+      color: var(--dark-text);
+    }
+
+    .sidebar-subtitle {
+      font-size: 0.875rem;
+      color: var(--light-text-secondary);
+      font-weight: 500;
+    }
+
+    body.dark .sidebar-subtitle {
+      color: var(--dark-text-secondary);
+    }
+
+    .nav-menu {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .nav-item, .dark-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      color: var(--light-text);
+      background: transparent;
+      border: none;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border-radius: 0.75rem;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.dark .nav-item, body.dark .dark-toggle {
+      color: var(--dark-text);
+    }
+
+    .nav-item:hover, .dark-toggle:hover {
+      background: rgba(37, 99, 235, 0.1);
+      transform: translateX(4px);
+    }
+
+    .nav-item.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      transition: width 0.3s ease;
+      z-index: -1;
+    }
+
+    .nav-item:hover::before {
+      width: 100%;
+    }
+
+    .nav-item:hover {
+      color: white;
+    }
+
+    .dark-toggle {
+      margin-top: auto;
+      border: 1px solid var(--border-light);
+    }
+
+    body.dark .dark-toggle {
+      border: 1px solid var(--border-dark);
+    }
+
+    .main {
+      margin-left: 280px;
+      flex: 1;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 2.5rem;
+      margin: 0 auto 2rem;
+      max-width: 900px;
+      border-radius: 1.5rem;
+      box-shadow: var(--shadow-large);
+      border: 1px solid var(--border-light);
+    }
+
+    body.dark .section {
+      background: rgba(30, 41, 59, 0.95);
+      border: 1px solid var(--border-dark);
+    }
+
+    .section.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--light-text);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    body.dark .section h2 {
+      color: var(--dark-text);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .info-card {
+      background: rgba(37, 99, 235, 0.05);
+      border: 1px solid rgba(37, 99, 235, 0.1);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    body.dark .info-card {
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--light-text);
+    }
+
+    body.dark .form-label {
+      color: var(--dark-text);
+    }
+
+    .form-select, .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--border-light);
+      border-radius: 0.75rem;
+      background: var(--light-bg);
+      color: var(--light-text);
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+
+    body.dark .form-select, body.dark .form-input {
+      border: 2px solid var(--border-dark);
+      background: var(--dark-surface);
+      color: var(--dark-text);
+    }
+
+    .form-select:focus, .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 2rem;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      box-shadow: var(--shadow-light);
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    .assignment-list {
+      margin-top: 2rem;
+    }
+
+    .assignment-item {
+      background: var(--light-surface);
+      border: 1px solid var(--border-light);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    body.dark .assignment-item {
+      background: var(--dark-surface);
+      border: 1px solid var(--border-dark);
+    }
+
+    .assignment-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .assignment-week {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .assignment-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      display: block;
+      margin: 0.25rem 0;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .assignment-link:hover {
+      border-bottom-color: var(--accent);
+      padding-left: 0.5rem;
+    }
+
+    .project-demo {
+      margin-top: 2rem;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .project-demo iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+
+    .grade-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.5rem 2rem;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-medium);
+    }
+
+    .grade-link:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-large);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      margin-top: 4rem;
+      color: var(--light-text-secondary);
+      border-top: 1px solid var(--border-light);
+    }
+
+    body.dark .footer {
+      color: var(--dark-text-secondary);
+      border-top: 1px solid var(--border-dark);
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-in {
+      animation: slideIn 0.6s ease-out;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        padding: 1rem;
+      }
+
+      .nav-menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .nav-item, .dark-toggle {
+        flex: 1;
+        min-width: calc(50% - 0.25rem);
+        justify-content: center;
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 1rem;
+      }
+
+      .section {
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .section h2 {
+        font-size: 1.5rem;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-  <h2>Upload Assignment</h2>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="profile-avatar">👨‍💻</div>
+      <h1>MAHEDI</h1>
+      <div class="sidebar-subtitle">Computer Science Student</div>
+      <div class="status-indicator">
+        <div class="status-dot"></div>
+        Available
+      </div>
+    </div>
+    
+    <nav class="nav-menu">
+      <a class="nav-item active" onclick="showSection('info', this)">
+        <span>🏠</span> Dashboard
+      </a>
+      <a class="nav-item" onclick="showSection('myInfoSection', this)">
+        <span>👤</span> My Information
+      </a>
+      <a class="nav-item" onclick="showSection('assignmentSection', this)">
+        <span>📋</span> Assignments
+      </a>
+      <a class="nav-item" onclick="showSection('projectSection', this)">
+        <span>💻</span> Project Portfolio
+      </a>
+      <a class="nav-item" onclick="showSection('gradeOverviewSection', this)">
+        <span>📊</span> Course Grades
+      </a>
+      <a class="nav-item" href="https://open.kakao.com/me/joshteacher" target="_blank">
+        <span>💬</span> Contact Professor
+      </a>
+    </nav>
+    
+    <button class="dark-toggle" onclick="toggleDarkMode()">
+      <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
+    </button>
+  </div>
 
-  <form id="assignmentForm">
-    <label>Select Assignment File:</label><br>
-    <input type="file" name="file" accept=".doc,.docx,.pdf,.txt,.zip,.jpg,.png"><br><br>
+  <div class="main">
+    <div class="section active slide-in" id="info">
+      <h2>🏠 Welcome to My Portfolio</h2>
+      <p style="font-size: 1.125rem; color: var(--light-text-secondary); margin-bottom: 2rem;">
+        Navigate through the sidebar to explore my academic work, assignments, and projects.
+      </p>
+      
+      <div class="info-grid">
+        <div class="info-card">
+          <h3 style="color: var(--primary); margin-bottom: 1rem;">📚 Quick Stats</h3>
+          <p><strong>Student ID:</strong> 2417551</p>
+          <p><strong>Active Projects:</strong> 1</p>
+          <p><strong>Completed Assignments:</strong> 4</p>
+        </div>
+        <div class="info-card">
+          <h3 style="color: var(--accent); margin-bottom: 1rem;">🎯 Current Focus</h3>
+          <p>Working on cryptography implementations and web development projects.</p>
+        </div>
+      </div>
+    </div>
 
-    <label>Or Paste Google Drive Link:</label><br>
-    <input type="url" name="driveLink" placeholder="https://drive.google.com/..."><br><br>
+    <div class="section" id="myInfoSection">
+      <h2>👤 Personal Information</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <h3 style="color: var(--primary); margin-bottom: 1rem;">Basic Details</h3>
+          <p><strong>Full Name:</strong> Kazi Mahedi Hasan</p>
+          <p><strong>Student ID:</strong> 2417551</p>
+          <p><strong>Email:</strong> mahedi77990@gmail.com</p>
+        </div>
+        <div class="info-card">
+          <h3 style="color: var(--accent); margin-bottom: 1rem;">Academic Focus</h3>
+          <p><strong>Major:</strong> Computer Science</p>
+          <p><strong>Specialization:</strong> Web Development & Cryptography</p>
+          <p><strong>Year:</strong> Current Academic Year</p>
+        </div>
+      </div>
+    </div>
 
-    <button type="submit">Submit Assignment</button>
-  </form>
+    <div class="section" id="assignmentSection">
+      <h2>📋 Assignment Management</h2>
+      
+      <div style="background: var(--light-surface); padding: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1.5rem; color: var(--primary);">Submit New Assignment</h3>
+        
+        <div class="form-group">
+          <label class="form-label" for="weekSelect">📅 Select Week:</label>
+          <select id="weekSelect" class="form-select" onchange="showWeek6Site()">
+            <option value="Week 2">Week 2</option>
+            <option value="Week 4">Week 4</option>
+            <option value="Week 7">Week 7</option>
+            <option value="Week 10">Week 10</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="driveLink">🔗 Google Drive Link:</label>
+          <input type="text" id="driveLink" class="form-input" placeholder="Paste your Google Drive link here">
+        </div>
+        
+        <button class="btn" onclick="submitAssignment()">
+          <span>📤</span> Submit Assignment
+        </button>
+      </div>
 
-  <hr>
+      <div class="assignment-list">
+        <h3 style="margin-bottom: 1.5rem; color: var(--primary);">📂 Submitted Assignments</h3>
+        <div id="assignmentList"></div>
+      </div>
+    </div>
 
-  <h2>Check Your Grade</h2>
-  <button onclick="checkGrade()">Check Grade</button>
+    <div class="section" id="projectSection">
+      <h2>💻 Project Portfolio</h2>
+      
+      <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.1)); padding: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+        <h3 style="color: var(--primary); margin-bottom: 1rem;">🔐 Cryptography Demo - Week 6</h3>
+        <p style="color: var(--light-text-secondary); margin-bottom: 1rem;">
+          Interactive demonstration of cryptographic algorithms and implementations.
+        </p>
+        
+        <a class="btn btn-secondary" href="https://drive.google.com/drive/folders/1bm_xtK7aRL7uXjhhUX-nQ86gyrZyOiby?usp=drive_link" target="_blank">
+          <span>📁</span> View Project Files
+        </a>
+      </div>
+      
+      <div class="project-demo">
+        <iframe src="week6.html" title="Cryptography Demo"></iframe>
+      </div>
+    </div>
 
-  <div id="gradeResult" style="margin-top: 10px; font-weight: bold;"></div>
+    <div class="section" id="gradeOverviewSection">
+      <h2>📊 Academic Performance</h2>
+      
+      <p style="font-size: 1.125rem; color: var(--light-text-secondary); margin-bottom: 2rem;">
+        Your comprehensive grade dashboard with real-time updates and detailed analytics.
+      </p>
+      
+      <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.1)); padding: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3 style="color: var(--primary); margin: 0;">📈 Live Grade Dashboard</h3>
+          <a class="btn btn-secondary" href="https://script.google.com/macros/s/AKfycbw7X3NPCjDVDVB48Hf1lt7DlHuvfB5PS5xMoTE4tZi6E3lX8NIlgy-bMoB-klHyeE7qAw/exec" target="_blank">
+            <span>🔗</span> Open in New Tab
+          </a>
+        </div>
+        <p style="color: var(--light-text-secondary); margin: 0;">
+          Interactive grade tracker embedded below for seamless viewing.
+        </p>
+      </div>
+      
+      <div class="project-demo">
+        <iframe src="https://script.google.com/macros/s/AKfycbw7X3NPCjDVDVB48Hf1lt7DlHuvfB5PS5xMoTE4tZi6E3lX8NIlgy-bMoB-klHyeE7qAw/exec" title="Grade Dashboard"></iframe>
+      </div>
+      
+      <div class="info-grid" style="margin-top: 3rem;">
+        <div class="info-card">
+          <h3 style="color: var(--success); margin-bottom: 1rem;">📈 Performance Tracking</h3>
+          <p>Monitor your academic progress with detailed insights and real-time grade updates.</p>
+        </div>
+        <div class="info-card">
+          <h3 style="color: var(--warning); margin-bottom: 1rem;">⏰ Live Updates</h3>
+          <p>Dashboard automatically refreshes to show the latest grades and assignment feedback.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>Built with ❤️ by <strong>Kazi Mahedi Hasan</strong></p>
+      <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+        📧 mahedi77990@gmail.com | 🎓 Computer Science Student
+      </p>
+    </footer>
+  </div>
 
   <script>
-    // Placeholder submission handler
-    document.getElementById("assignmentForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      alert("Assignment uploaded (not yet connected to server).");
+    const assignmentData = {
+      "Week 2": ["https://docs.google.com/document/d/1wmlghH1QDpuMMgtebZTU9TfC3wZvVvzFFARGAgt7Srs/edit?usp=drive_link"],
+      "Week 4": ["https://drive.google.com/drive/folders/1Uqd4Oh2t5G1sOMFaXTDb1JveJHw7F8Em?usp=drive_link"],
+      "Week 7": ["https://drive.google.com/drive/folders/11Exj3Uipm-dC2w8u7x1NFsXwFakJ8RBB?usp=drive_link"],
+      "Week 10": ["https://drive.google.com/drive/folders/1BqrCuFFHmYK9lsmTcMYATkdDrY8EEG-3?usp=drive_link"]
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderAssignmentList();
+      
+      // Add smooth loading animation
+      setTimeout(() => {
+        document.querySelector('.section.active').classList.add('slide-in');
+      }, 100);
     });
 
-    // Grade check function
-    function checkGrade() {
-      const gradeUrl = "https://script.google.com/macros/s/AKfycbyosCbxrEC_f3ahZKCs6wfVtLGs1vYXQU7Gg9dh_Rcx-tquNTXYfhAw91R2L2u80Ib66Q/exec";
-
-      fetch(gradeUrl)
-        .then(res => res.text())
-        .then(data => {
-          document.getElementById("gradeResult").innerText = "Your Grade: " + data;
-        })
-        .catch(err => {
-          document.getElementById("gradeResult").innerText = "Error getting grade.";
-        });
+    function showSection(sectionId, navElement) {
+      // Remove active class from all sections and nav items
+      document.querySelectorAll(".section").forEach(section => {
+        section.classList.remove("active");
+      });
+      
+      document.querySelectorAll(".nav-item").forEach(item => {
+        item.classList.remove("active");
+      });
+      
+      // Add active class to selected section and nav item
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.classList.add("active", "slide-in");
+      }
+      
+      if (navElement) {
+        navElement.classList.add("active");
+      }
     }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+      const themeIcon = document.getElementById("theme-icon");
+      const themeText = document.getElementById("theme-text");
+      
+      if (document.body.classList.contains("dark")) {
+        themeIcon.textContent = "☀️";
+        themeText.textContent = "Light Mode";
+      } else {
+        themeIcon.textContent = "🌙";
+        themeText.textContent = "Dark Mode";
+      }
+      
+      // Save theme preference
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    function renderAssignmentList() {
+      const assignmentList = document.getElementById("assignmentList");
+      assignmentList.innerHTML = "";
+      
+      Object.entries(assignmentData).forEach(([week, links]) => {
+        const container = document.createElement("div");
+        container.className = "assignment-item";
+        
+        const weekElement = document.createElement("div");
+        weekElement.className = "assignment-week";
+        weekElement.textContent = week;
+        container.appendChild(weekElement);
+        
+        links.forEach(link => {
+          const linkElement = document.createElement("a");
+          linkElement.href = link;
+          linkElement.target = "_blank";
+          linkElement.className = "assignment-link";
+          linkElement.textContent = `📎 ${link.length > 50 ? link.substring(0, 50) + '...' : link}`;
+          container.appendChild(linkElement);
+        });
+        
+        assignmentList.appendChild(container);
+      });
+    }
+
+    function submitAssignment() {
+      const week = document.getElementById("weekSelect").value;
+      const link = document.getElementById("driveLink").value.trim();
+      
+      if (link && assignmentData[week]) {
+        // Add loading state
+        const button = event.target;
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<div class="loading"></div> Submitting...';
+        button.disabled = true;
+        
+        // Simulate submission delay
+        setTimeout(() => {
+          assignmentData[week].push(link);
+          renderAssignmentList();
+          document.getElementById("driveLink").value = "";
+          
+          // Show success message
+          showNotification("✅ Assignment submitted successfully!", "success");
+          
+          // Restore button
+          button.innerHTML = originalContent;
+          button.disabled = false;
+        }, 1000);
+      } else {
+        showNotification("⚠️ Please enter a valid link and select a week.", "warning");
+      }
+    }
+
+    function showNotification(message, type) {
+      const notification = document.createElement("div");
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        background: ${type === 'success' ? 'var(--success)' : 'var(--warning)'};
+        color: white;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        box-shadow: var(--shadow-large);
+        z-index: 9999;
+        animation: slideIn 0.3s ease-out;
+      `;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in forwards';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    function showWeek6Site() {
+      // Reserved for future functionality
+    }
+
+    // Load saved theme on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+        document.getElementById('theme-icon').textContent = '☀️';
+        document.getElementById('theme-text').textContent = 'Light Mode';
+      }
+    });
+
+    // Add CSS for slide out animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideOut {
+        from {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
